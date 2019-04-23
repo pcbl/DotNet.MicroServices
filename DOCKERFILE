@@ -1,0 +1,4 @@
+#To be Used to enable plugins(when needed)
+FROM rabbitmq:3-management
+
+RUN rabbitmq-plugins enable rabbitmq_management
