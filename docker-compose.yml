@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  dataservice:
+    image: ${DOCKER_REGISTRY-}dataservice
+    build:
+      context: .
+      dockerfile: DataService/Dockerfile
