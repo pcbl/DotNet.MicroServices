@@ -1,11 +1,64 @@
-To Run the Container:
-	docker run -d --hostname RabbitMQHost --name RabbitMQ -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=test -p 15672:15672 -p 5672:5672 rabbitmq:3-management
-		
-To Stop
-	docker stop RabbitMQ
+#RabbitMQ
+docker run -d --hostname RabbitMQHost --name RabbitMQ -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=test -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 
-To Start
-	docker start RabbitMQ
+#Keycloak
+docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=test -p 8080:8080 -d --hostname KeyCloakHost --name KeyCloak jboss/keycloak 
 
-To Stop+Remove
-	docker rm -f RabbitMQ
+#Consul
+docker run -d --hostname ConsulHost --network test-net --name Consul -p 8500:8500 -e CONSUL_BIND_INTERFACE=eth0 -e CONSUL_CLIENT_INTERFACE=eth0 consul
+
+
+#bash
+docker run --network test-net --rm -it --hostname LinuxHost --name Linux bash
+
+docker run --rm byrnedo/alpine-curl http://10.0.75.1:5000/api/values
+
+docker run --network test-net  --rm byrnedo/alpine-curl http://DataService/api/values
+
+docker run --network test-net --rm byrnedo/alpine-curl http://Consul:8500
+
+>> Create Network (TO support name resolution by Container name!)
+docker network create test-net
+https://docs.docker.com/network/bridge/
+
+
+**START TOP		
+>>To Stop
+docker stop RabbitMQ
+docker stop KeyCloak
+docker stop Consul
+
+>>To Start
+docker start RabbitMQ
+docker start KeyCloak
+docker start Consul
+
+>>To Stop+Remove
+docker rm -f RabbitMQ
+docker rm -f KeyCloak
+docker rm -f Consul
+
+
+
+>>Bash
+docker exec -it Linux /bin/bash
+
+
+>>IS External Requests(To call from Docker)
+http://www.lakshmikanth.com/enable-external-request-on-iis-express/
+
+
+netsh http add urlacl url=https://*:44379/ user=everyone
+
+docker run --rm byrnedo/alpine-curl http://10.0.75.1:5000/api/values
+
+https://localhost:5001/api/values
+
+>>Create Self signed certificate
+makecert -n "CN=%ComputerName%" -ss MY -sr LocalMachine -b 08/09/2016 -e 09/09/2028 -a sha256 -sky exchange -r -pe myCert.cer
+
+https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-configure-a-port-with-an-ssl-certificate
+Bindind Certificate to IIS Express
+To List certificates: netsh http show sslcert
+To Add the Certificate:
+netsh http add sslcert ipport=0.0.0.0:54379 certhash=0a95301ebf525be492fa77624a530dc4ecebeb07 appid={214124cd-d05b-4309-9af9-9caa44b2b74a}
