@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using Consul;
 using Microsoft.AspNetCore;
@@ -11,27 +10,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace DataService
+namespace ConsumerService
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-           /* using (TcpClient tcpClient = new TcpClient())
-            {
-                try
-                {
-                    tcpClient.Connect("Consul", 8500);
-                    Console.WriteLine("Port open");
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Port closed");
-                }
-            }*/
 
             var host = CreateWebHostBuilder(args).Build();
-            
+
             #region Consul Configuration -------------------------------------------------------------------------------
 
             var consulClient = new ConsulClient(configuration => {
@@ -39,17 +26,17 @@ namespace DataService
                 //Sample params: --network test-net --link Consul:consul
                 // consul the alias of the linkect Consul Container!
                 //It is annoying: Even when I am abble to ping Consul I must add a Link to get it working correctly
-                configuration.Address = new Uri("http://consul:8500"); 
+                configuration.Address = new Uri("http://consul:8500");
 
             });
 
             // IP Parameters
             var hostDnsInfo = Dns.GetHostEntry(Dns.GetHostName());
             var ip = hostDnsInfo.AddressList[0].ToString();
-            var port = 80;  
+            var port = 80;
 
             // Registration Parameters
-            var name = "data-service";
+            var name = "consumer-service";
             var id = $"{name}-{Dns.GetHostName()}:{port}";
 
             // Health Check Definition - check on private address within docker network.
@@ -73,7 +60,7 @@ namespace DataService
             // Service Registration (Gateway on public address, Healthcheck on private address)
             var registration = new AgentServiceRegistration()
             {
-                Checks = new[] 
+                Checks = new[]
                 {
                     appCheck,
                     tcpCheck
@@ -82,14 +69,14 @@ namespace DataService
                 ID = id,
                 Name = name,
                 Port = port,
-                Tags = new[] {"api" }
+                Tags = new[] { "api" }
             };
             #endregion
 
             #region Consul Registration --------------------------------------------------------------------------------
             consulClient.Agent.ServiceRegister(registration).GetAwaiter().GetResult();
             #endregion
-            
+
             host.Run();
 
             #region Consul Deregistration ------------------------------------------------------------------------------
