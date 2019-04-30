@@ -1,31 +1,76 @@
 {
+  "Aggregates": [],
+  "DynamicReRoutes": [],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Host": "consul",
+      "Port": 8500,
+      "Type": "Consul",
+      "PollingInterval": 1000,
+      "ConfigurationKey": "ApiGateway-localhost"
+    },
+    "RequestIdKey": "OcRequestId"
+  },
   "ReRoutes": [
     {
-      "DownstreamPathTemplate": "/api/queues/%2F/{queue}/get",
+      "UseServiceDiscovery": true, // use Consul service discovery
+      "ServiceName": "data-service",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 15672
-        }
-      ],
-      "UpstreamPathTemplate": "/get/{queue}",
-      "UpstreamHttpMethod": [ "Post" ]
+      "DownstreamPathTemplate": "/api/values",
+      "UpstreamPathTemplate": "/data/values",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamHeaderTransform": {
+        "Location": "{DownstreamBaseUrl}, {BaseUrl}"
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "RequestIdKey": "OcRequestId"
     },
     {
-      "DownstreamPathTemplate": "/api/exchanges/%2F/{exchange}/publish",
+      "UseServiceDiscovery": true, // use Consul service discovery
+      "ServiceName": "data-service",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 15672
-        }
-      ],
-      "UpstreamPathTemplate": "/publish/{exchange}",
-      "UpstreamHttpMethod": [ "Post" ]
+      "DownstreamPathTemplate": "/api/values/{value}",
+      "UpstreamPathTemplate": "/data/values/{value}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamHeaderTransform": {
+        "Location": "{DownstreamBaseUrl}, {BaseUrl}"
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "RequestIdKey": "OcRequestId"
+    },
+    {
+      "UseServiceDiscovery": true, // use Consul service discovery
+      "ServiceName": "consumer-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/values",
+      "UpstreamPathTemplate": "/consumer/values",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamHeaderTransform": {
+        "Location": "{DownstreamBaseUrl}, {BaseUrl}"
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "RequestIdKey": "OcRequestId"
+    },
+    {
+      "UseServiceDiscovery": true, // use Consul service discovery
+      "ServiceName": "consumer-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/values/{value}",
+      "UpstreamPathTemplate": "/consumer/values/{value}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamHeaderTransform": {
+        "Location": "{DownstreamBaseUrl}, {BaseUrl}"
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
+      "RequestIdKey": "OcRequestId"
     }
-  ],
-  "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:44310"
-  }
+  ]
 }

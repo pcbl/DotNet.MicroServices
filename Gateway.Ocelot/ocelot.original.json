@@ -1,0 +1,31 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/queues/%2F/{queue}/get",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 15672
+        }
+      ],
+      "UpstreamPathTemplate": "/get/{queue}",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/exchanges/%2F/{exchange}/publish",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 15672
+        }
+      ],
+      "UpstreamPathTemplate": "/publish/{exchange}",
+      "UpstreamHttpMethod": [ "Post" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:44310"
+  }
+}

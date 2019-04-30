@@ -7,12 +7,14 @@ docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=test -p 8080:8080 -d --ho
 #Consul
 docker run -d --hostname ConsulHost --network test-net --name Consul -p 8500:8500 -e CONSUL_BIND_INTERFACE=eth0 -e CONSUL_CLIENT_INTERFACE=eth0 consul
 
+docker run -d --hostname ConsulHost --name Consul -p 8500:8500 -e CONSUL_BIND_INTERFACE=eth0 -e CONSUL_CLIENT_INTERFACE=eth0 consul
+
 #bash
 docker run --network test-net --link Consul:consul --rm -it --hostname LinuxHost --name Linux bash
 
 docker run --rm byrnedo/alpine-curl http://10.0.75.1:5000/api/values
 
-docker run --network test-net  --rm byrnedo/alpine-curl http://DataService/api/values
+docker run --network test-net  --rm byrnedo/alpine-curl http://172.19.0.4/data/api/values
 
 docker run --network test-net --rm byrnedo/alpine-curl http://Consul:8500
 
@@ -50,6 +52,7 @@ http://www.lakshmikanth.com/enable-external-request-on-iis-express/
 netsh http add urlacl url=https://*:44379/ user=everyone
 
 docker run --rm byrnedo/alpine-curl http://10.0.75.1:5000/api/values
+
 
 https://localhost:5001/api/values
 

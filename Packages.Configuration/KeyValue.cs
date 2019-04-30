@@ -29,7 +29,7 @@ namespace Packages.Configuration
                 {
                     Value = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))
                 };
-
+                
                 return client.KV.Put(putPair); 
             }
         }
