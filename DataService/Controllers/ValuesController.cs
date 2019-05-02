@@ -28,7 +28,7 @@ namespace DataService.Controllers
             List<string> items = new List<string>(current);
             var item = "item" + id.ToString();
             items.Add(item);
-            await Packages.Configuration.KeyValue.Add("Values", items.ToArray());
+            var result = await Packages.Configuration.KeyValue.Add("Values", items.ToArray());
 
             return item;
         }

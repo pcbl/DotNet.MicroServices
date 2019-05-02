@@ -21,16 +21,15 @@ namespace Packages.Configuration
 
             });
         }
-        public static Task<WriteResult<bool>> Add<T>(string key, T value)
+        public static async Task<WriteResult<bool>> Add<T>(string key, T value)
         {
             using (var client = CreateClient())
             {
-                var putPair = new KVPair(key)
+                var pair = new KVPair(key)
                 {
                     Value = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))
-                };
-                
-                return client.KV.Put(putPair); 
+                };                
+                return await client.KV.Put(pair); 
             }
         }
 
