@@ -1,3 +1,7 @@
+Contaienr SSL Certificates!
+https://github.com/dotnet/dotnet-docker/blob/master/samples/aspnetapp/aspnetcore-docker-https.md
+Section: Windows using Linux containers
+
 #RabbitMQ
 docker run -d --hostname RabbitMQHost --name RabbitMQ -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=test -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 
@@ -17,6 +21,13 @@ docker run --rm byrnedo/alpine-curl http://10.0.75.1:5000/api/values
 docker run --network test-net  --rm byrnedo/alpine-curl http://172.19.0.4/data/api/values
 
 docker run --network test-net --rm byrnedo/alpine-curl http://Consul:8500
+
+docker run --network test-net --rm byrnedo/alpine-curl http://host.docker.internal/.well-known/openid-configuration
+
+identityserver/.well-known/openid-configuration
+http://172.19.0.2/.well-known/openid-configuration
+https://brainwipe.github.io/docker/dotnet/oauth/identityserver/2017/10/30/oauth-on-docker-part2/
+
 
 >> Create Network (TO support name resolution by Container name!)
 docker network create test-net
