@@ -21,10 +21,16 @@ namespace DataService.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<ActionResult<string>> Get(int id)
         {
-            Packages.Configuration.KeyValue.Add("Values", new string[] { "Wow", "ItWorks" });
-            return "value";
+            //Test
+            var current = await Packages.Configuration.KeyValue.Get("Values", new string[] { "value1", "value2" });
+            List<string> items = new List<string>(current);
+            var item = "item" + id.ToString();
+            items.Add(item);
+            var result = await Packages.Configuration.KeyValue.Add("Values", items.ToArray());
+
+            return item;
         }
 
         // POST api/values

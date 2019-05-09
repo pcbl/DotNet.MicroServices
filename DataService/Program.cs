@@ -75,7 +75,7 @@ namespace DataService
             {
                 Checks = new[] 
                 {
-                //    appCheck,
+                    appCheck,
                     tcpCheck
                 },
                 Address = ip,
